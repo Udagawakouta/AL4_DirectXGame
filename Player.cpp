@@ -6,7 +6,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	model_ = model;
 	textureHandle_ = textureHandle;
 
+	// ワールドトランスフォームの初期化
 	worldtransform_.Initialize();
+	// X,Y,Z方向のスケーリングを設定
+	worldtransform_.scale_ = {1.0f, 1.0f, 1.0f};
+	worldtransform_.translation_ = {0.0f, 2.0f, 0.0f};
 }
 
 void Player::Update() { 
