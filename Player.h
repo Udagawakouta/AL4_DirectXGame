@@ -13,6 +13,8 @@ public:
 	void Draw(ViewProjection& viewprojection);
 
 private:
+	// キーボード入力
+	Input* input_ = nullptr;
 	// ワールド変換データ
 	WorldTransform worldtransform_;
 	// モデル
