@@ -1,8 +1,10 @@
 ﻿#include "Player.h"
 #include "Input.h"
-#include <Xinput.h>
 #include "MyMath.h"
+#include <Xinput.h>
 #include <cassert>
+#define _USE_MATH_DEFINES
+#include "math.h"
 
 Vector3 Player::GetWorldPosition() {
 	// ワールド座標を入れる変数
@@ -18,7 +20,7 @@ Vector3 Player::GetWorldPosition() {
 Player::Player() {}
 Player::~Player() {}
 
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
@@ -54,10 +56,9 @@ void Player::Update() {
 
 		// 移動
 		worldtransform_.translation_ = Add(worldtransform_.translation_, move);
-	
+
 		// playerのY軸周り角度(θy)
 		worldtransform_.rotation_.y = std::atan2(move.x, move.z);
-
 	}
 	// 行列を定数バッファに転送
 	worldtransform_.UpdateMatrix();
@@ -65,4 +66,25 @@ void Player::Update() {
 
 void Player::Draw(ViewProjection& viewprojection) {
 	model_->Draw(worldtransform_, viewprojection, textureHandle_);
+}
+
+void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
+
+void Player::UpdateFloatingGimmick() {
+	// 浮遊移動のサイクル<frame>
+	const uint16_t period = 120;
+	// 1フレームでのパラメーター加算値
+	const float step = 2.0f * (float)M_PI / period;
+	// パラメーターを1ステップ分加算
+	floatingParameter_ += step;
+	// 2πを超えたら0に戻す
+	floatingParameter_ = (float)std::fmod(floatingParameter_, 2.0f * M_PI);
+	// 浮遊の振幅<m>
+	const float floatingAmplitude = 1.0f;
+	// 浮遊を座標に反映
+	worldtransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+
+	// 腕の動き
+	// worldtransformL_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
+	// worldtransformR_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
 }
