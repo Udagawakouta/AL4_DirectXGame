@@ -20,6 +20,15 @@ Matrix4x4 MakeViewportMatrix(
 // 座標変換
 Vector3 Transform(const Vector3 vector, const Matrix4x4 matrix);
 
+#pragma region 回転行列
+Matrix4x4 MakeRotateXMatrix(float radian);
+
+Matrix4x4 MakeRotateYMatrix(float radian);
+
+Matrix4x4 MakeRotateZMatrix(float radian);
+
+Matrix4x4 MakeRotateMatrix(const Vector3& radian);
+#pragma endregion
 
 //加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
@@ -33,3 +42,5 @@ float Length(const Vector3& v);
 Vector3 Normalize(const Vector3& v);
 // 逆行列
 Matrix4x4 Inverse(const Matrix4x4& m);
+
+Vector3 Multiply2(const float& v1, const Vector3& v2);

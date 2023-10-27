@@ -5,6 +5,18 @@
 
 class Player {
 public:
+
+	Vector3 GetWorldPosition();
+
+	const WorldTransform& GetWorldTransform() { return worldtransform_; }
+
+	void SetViewProjection(const ViewProjection* viewprojection) {
+		viewprojection_ = viewprojection;
+	}
+
+	Player();
+	~Player();
+
 	// 初期化
 	void Initialize(Model* model, uint32_t textureHandle);
 	// 更新処理
@@ -13,10 +25,10 @@ public:
 	void Draw(ViewProjection& viewprojection);
 
 private:
-	// キーボード入力
-	Input* input_ = nullptr;
 	// ワールド変換データ
 	WorldTransform worldtransform_;
+	// カメラのビュープロジェクション
+	const ViewProjection* viewprojection_ = nullptr;
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル

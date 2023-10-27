@@ -13,6 +13,7 @@
 #include <memory>
 #include "Skydome.h"
 #include "Ground.h"
+#include "FollowCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -71,6 +72,8 @@ private: // メンバ変数
 	Ground* ground_ = nullptr;
 	// 3D地面モデル
 	Model* modelGround_ = nullptr;
+	// カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;

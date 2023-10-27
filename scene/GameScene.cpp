@@ -2,9 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 
-GameScene::GameScene() { 
-	
-}
+GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete modelSkydome_;
@@ -12,21 +10,18 @@ GameScene::~GameScene() {
 	delete debugcamera_;
 }
 
-void GameScene::Initialize()
-{
+void GameScene::Initialize() {
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 	// スプライトの生成
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
-	
+
 	// ワールドトランスフォームの初期化
-	//worldTransform_.Initialize();
-	
+	// worldTransform_.Initialize();
+
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
-	viewProjection_.farZ = 1600.0f;
-	viewProjection_.UpdateMatrix();
 
 	// 3Dモデルの生成
 	model_.reset(Model::Create());
@@ -39,14 +34,13 @@ void GameScene::Initialize()
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	#pragma region デバックカメラ
+#pragma region デバックカメラ
 	// デバックカメラの生成
 	debugcamera_ = new DebugCamera(1280, 720);
 	debugcamera_->SetFarZ(1400.0f);
 #pragma endregion
 
-
-	#pragma region 天球の初期化
+#pragma region 天球の初期化
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
@@ -56,8 +50,7 @@ void GameScene::Initialize()
 	skydome_->Initialize(modelSkydome_);
 #pragma endregion
 
-
-	#pragma region 地面の初期化
+#pragma region 地面の初期化
 	// 3Dモデルの生成
 	modelGround_ = Model::CreateFromOBJ("ground", true);
 
@@ -65,20 +58,17 @@ void GameScene::Initialize()
 	ground_ = new Ground();
 	// 地面初期化
 	ground_->Initialize(modelGround_);
-	#pragma endregion
+#pragma endregion
+
+	// カメラ
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	followCamera_->SetTarget(&player_->GetWorldTransform());
+
+	player_->SetViewProjection(&followCamera_->GetViewProjection());
 }
 
 void GameScene::Update() {
-	//// スプライトの今の座標を取得
-	//Vector2 position = sprite_->GetPosition();
-	//// 座標を{2,1}移動
-	//position.x = 2.0f;
-	//position.y = 1.0f;
-	//// 移動した座標をスプライトに反映
-	//sprite_->SetPosition(position);
-
-	// 3Dモデルの生成
-	//model_ = Model::Create();
 
 	// カメラ処理
 	if (isDebugCameraActive_) {
@@ -89,16 +79,18 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 	} else {
 
+		// 追従カメラの更新
+		followCamera_->Update();
+		viewProjection_.matView = followCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
+		// viewProjection_.UpdateMatrix();
 	}
 	if (input_->TriggerKey(DIK_M)) {
 
 		isDebugCameraActive_ = true;
 	}
-
-	// デバックカメラの生成
-	debugcamera_->Update();
 
 	// 自キャラの更新
 	player_->Update();
@@ -136,7 +128,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+	// model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
@@ -150,8 +142,6 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 
-
-
 #pragma endregion
 
 #pragma region 前景スプライト描画
@@ -161,9 +151,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	//sprite_->Draw();
-
-
+	// sprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

@@ -4,7 +4,6 @@
 
 #define USE_MATH_DEFINES
 
-
 // 行列の積
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
@@ -97,8 +96,6 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vecto
 	matTrans.m[3][1] = translate.y;
 	matTrans.m[3][2] = translate.z;
 
-	
-	
 	return Matrix4x4(Multiply(Multiply(matScale, matRot), matTrans));
 }
 
@@ -129,8 +126,7 @@ Matrix4x4 MakeViewportMatrix(
 	return result;
 }
 
-Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m)
-{
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	Vector3 result{
 	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
 	    v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
@@ -138,6 +134,88 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m)
 
 	return result;
 }
+
+// X軸回転行列
+Matrix4x4 MakeRotateXMatrix(float radian) {
+	Matrix4x4 result;
+	result.m[0][0] = 1.0f;
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = cosf(radian);
+	result.m[1][2] = sinf(radian);
+	result.m[1][3] = 0.0f;
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = -sinf(radian);
+	result.m[2][2] = cosf(radian);
+	result.m[2][3] = 0.0f;
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = 0.0f;
+	result.m[3][3] = 1.0f;
+
+	return result;
+};
+// Y軸回転行列
+Matrix4x4 MakeRotateYMatrix(float radian) {
+	Matrix4x4 result;
+	result.m[0][0] = cosf(radian);
+	result.m[0][1] = 0.0f;
+	result.m[0][2] = -sinf(radian);
+	result.m[0][3] = 0.0f;
+	result.m[1][0] = 0.0f;
+	result.m[1][1] = 1.0f;
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+	result.m[2][0] = sinf(radian);
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = cosf(radian);
+	result.m[2][3] = 0.0f;
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = 0.0f;
+	result.m[3][3] = 1.0f;
+	return result;
+};
+// Z軸回転行列
+Matrix4x4 MakeRotateZMatrix(float radian) {
+	Matrix4x4 result;
+	result.m[0][0] = cosf(radian);
+	result.m[0][1] = sinf(radian);
+	result.m[0][2] = 0.0f;
+	result.m[0][3] = 0.0f;
+	result.m[1][0] = -sinf(radian);
+	result.m[1][1] = cosf(radian);
+	result.m[1][2] = 0.0f;
+	result.m[1][3] = 0.0f;
+	result.m[2][0] = 0.0f;
+	result.m[2][1] = 0.0f;
+	result.m[2][2] = 1.0f;
+	result.m[2][3] = 0.0f;
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = 0.0f;
+	result.m[3][3] = 1.0f;
+
+	return result;
+};
+
+Matrix4x4 MakeRotateMatrix(const Vector3& radian) {
+	Matrix4x4 rotateX{};
+	Matrix4x4 rotateY{};
+	Matrix4x4 rotateZ{};
+	rotateX = MakeRotateXMatrix(radian.x);
+	rotateY = MakeRotateYMatrix(radian.y);
+	rotateZ = MakeRotateZMatrix(radian.z);
+
+	Matrix4x4 result{};
+	result = Multiply(rotateX, Multiply(rotateY, rotateZ));
+
+	return result;
+}
+
+
 
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
@@ -171,13 +249,15 @@ float Length(const Vector3& v) {
 }
 // 正規化
 Vector3 Normalize(const Vector3& v) {
-	Vector3 result;
-	result.x = v.x / Length(v);
-	result.y = v.y / Length(v);
-	result.z = v.z / Length(v);
+	Vector3 result = v;
+	float len = Length(v);
+	if (len != 0) {
+		result.x = v.x / len;
+		result.y = v.y / len;
+		result.z = v.z / len;
+	}
 	return result;
 }
-
 
 Vector3 Transform(const Vector3 vecter, const Matrix4x4 matrix) {
 	Vector3 result;
@@ -314,3 +394,10 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 	return result;
 };
 
+Vector3 Multiply2(const float& v1, const Vector3& v2) {
+	Vector3 result{};
+	result.x = v1 * v2.x;
+	result.y = v1 * v2.y;
+	result.z = v1 * v2.z;
+	return result;
+}
