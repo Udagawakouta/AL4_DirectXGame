@@ -52,6 +52,8 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	// スプライト
 	Sprite* sprite_ = nullptr;
+	// 3Dモデルデータ
+	std::unique_ptr<Model> modelPlayer_;
 	// 3Dモデル
 	std::unique_ptr<Model> modelFighterBody_;
 	std::unique_ptr<Model> modelFighterHead_;

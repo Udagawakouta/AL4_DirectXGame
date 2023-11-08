@@ -21,9 +21,18 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
-	assert(model);
-	model_ = model;
-	textureHandle_ = textureHandle;
+	// NULLポインタチェック
+	assert(modelBody);
+	assert(modelHead);
+	assert(modelL_arm);
+	assert(modelR_arm);
+
+	// 引数として受け取ったデータをメンバ変数に記録する
+	modelFighterBody_ = modelBody;
+	modelFighterHead_ = modelHead;
+	modelFighterL_arm_ = modelL_arm;
+	modelFighterR_arm_ = modelR_arm;
+	// textureHandle_ = textureHandle;
 
 	// ワールドトランスフォームの初期化
 	worldtransform_.Initialize();

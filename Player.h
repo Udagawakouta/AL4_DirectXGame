@@ -18,7 +18,7 @@ public:
 	~Player();
 
 	// 初期化
-	void Initialize(Model* modelBody,Model*modelHead,Model*modelL_arm,Model*modelR_arm);
+	void Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm);
 	// 更新処理
 	void Update();
 	// 描画処理
