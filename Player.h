@@ -5,7 +5,6 @@
 
 class Player {
 public:
-
 	Vector3 GetWorldPosition();
 
 	const WorldTransform& GetWorldTransform() { return worldtransform_; }
@@ -33,5 +32,4 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
-
 };
