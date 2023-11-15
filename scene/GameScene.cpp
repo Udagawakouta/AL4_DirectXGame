@@ -5,9 +5,6 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	delete modelSkydome_;
-	delete modelGround_;
-	delete debugcamera_;
 }
 
 void GameScene::Initialize() {
@@ -24,9 +21,9 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// 3Dモデルの生成
-	modelPlayer_.reset(Model::CreateFromOBJ("Player", true));
-	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
+	// modelPlayer_.reset(Model::CreateFromOBJ("Player", true));
 	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
+	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
 

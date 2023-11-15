@@ -10,15 +10,16 @@ Vector3 Player::GetWorldPosition() {
 	// ワールド座標を入れる変数
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得
-	worldPos.x = worldtransform_.matWorld_.m[3][0];
-	worldPos.y = worldtransform_.matWorld_.m[3][1];
-	worldPos.z = worldtransform_.matWorld_.m[3][2];
+	worldPos.x = worldtransformBase_.matWorld_.m[3][0];
+	worldPos.y = worldtransformBase_.matWorld_.m[3][1];
+	worldPos.z = worldtransformBase_.matWorld_.m[3][2];
 
 	return worldPos;
 }
 
-Player::Player() {}
-Player::~Player() {}
+Player::~Player() { 
+
+}
 
 void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
 	// NULLポインタチェック
@@ -34,11 +35,32 @@ void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, M
 	modelFighterR_arm_ = modelR_arm;
 	// textureHandle_ = textureHandle;
 
+#pragma region モデルの設定
+
+	// 腕の座標指定
+	worldtransformHead_.translation_.y = 1.5f;
+	worldtransformL_arm_.translation_.x = -0.5f;
+	worldtransformR_arm_.translation_.x = 0.5f;
+	worldtransformL_arm_.translation_.y = 1.3f;
+	worldtransformR_arm_.translation_.y = 1.3f;
+
+#pragma endregion
+
 	// ワールドトランスフォームの初期化
-	worldtransform_.Initialize();
+	worldtransformBase_.Initialize();
 	// X,Y,Z方向のスケーリングを設定
-	worldtransform_.scale_ = {1.0f, 1.0f, 1.0f};
-	worldtransform_.translation_ = {0.0f, 2.0f, -5.0f};
+	worldtransformBase_.scale_ = {1.0f, 1.0f, 1.0f};
+	worldtransformBase_.translation_ = {0.0f, 2.0f, -5.0f};
+
+	worldtransformBody_.Initialize();
+	worldtransformHead_.Initialize();
+	worldtransformL_arm_.Initialize();
+	worldtransformR_arm_.Initialize();
+
+	worldtransformBody_.parent_ = &worldtransformBase_;
+	worldtransformHead_.parent_ = &worldtransformBody_;
+	worldtransformL_arm_.parent_ = &worldtransformBody_;
+	worldtransformR_arm_.parent_ = &worldtransformBody_;
 }
 
 void Player::Update() {
@@ -64,17 +86,28 @@ void Player::Update() {
 		move = TransformNormal(move, rotateMatrix);
 
 		// 移動
-		worldtransform_.translation_ = Add(worldtransform_.translation_, move);
+		worldtransformBase_.translation_ = Add(worldtransformBase_.translation_, move);
 
 		// playerのY軸周り角度(θy)
-		worldtransform_.rotation_.y = std::atan2(move.x, move.z);
+		worldtransformBase_.rotation_.y = std::atan2(move.x, move.z);
 	}
+
+	UpdateFloatingGimmick();
+
 	// 行列を定数バッファに転送
-	worldtransform_.UpdateMatrix();
+	worldtransformBase_.UpdateMatrix();
+	worldtransformBody_.UpdateMatrix();
+	worldtransformHead_.UpdateMatrix();
+	worldtransformL_arm_.UpdateMatrix();
+	worldtransformR_arm_.UpdateMatrix();
 }
 
 void Player::Draw(ViewProjection& viewprojection) {
-	model_->Draw(worldtransform_, viewprojection, textureHandle_);
+	// model_->Draw(worldtransform_, viewprojection, textureHandle_);
+	modelFighterBody_->Draw(worldtransformBody_, viewprojection);
+	modelFighterHead_->Draw(worldtransformHead_, viewprojection);
+	modelFighterL_arm_->Draw(worldtransformL_arm_, viewprojection);
+	modelFighterR_arm_->Draw(worldtransformR_arm_, viewprojection);
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -89,11 +122,11 @@ void Player::UpdateFloatingGimmick() {
 	// 2πを超えたら0に戻す
 	floatingParameter_ = (float)std::fmod(floatingParameter_, 2.0f * M_PI);
 	// 浮遊の振幅<m>
-	const float floatingAmplitude = 1.0f;
+	const float floatingAmplitude = 0.5f;
 	// 浮遊を座標に反映
 	worldtransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
 
 	// 腕の動き
-	// worldtransformL_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
-	// worldtransformR_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
+	worldtransformL_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
+	worldtransformR_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
 }

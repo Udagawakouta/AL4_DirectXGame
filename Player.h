@@ -5,16 +5,14 @@
 
 class Player {
 public:
-
 	Vector3 GetWorldPosition();
 
-	const WorldTransform& GetWorldTransform() { return worldtransform_; }
+	const WorldTransform& GetWorldTransform() { return worldtransformBase_; }
 
 	void SetViewProjection(const ViewProjection* viewprojection) {
 		viewprojection_ = viewprojection;
 	}
 
-	Player();
 	~Player();
 
 	// 初期化
@@ -24,18 +22,17 @@ public:
 	// 描画処理
 	void Draw(ViewProjection& viewprojection);
 
-
 	// 浮遊ギミック初期化
 	void InitializeFloatingGimmick();
 	// 浮遊ギミック更新
 	void UpdateFloatingGimmick();
-	
+
 	// 浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
 
 private:
 	// ワールド変換データ
-	WorldTransform worldtransform_;
+	//WorldTransform worldtransform_;
 	WorldTransform worldtransformBase_;
 	WorldTransform worldtransformBody_;
 	WorldTransform worldtransformHead_;
@@ -45,14 +42,13 @@ private:
 	// カメラのビュープロジェクション
 	const ViewProjection* viewprojection_ = nullptr;
 	// 3Dモデル
-	Model* model_;
-	Model* modelFighterBody_;
-	Model* modelFighterHead_;
-	Model* modelFighterL_arm_;
-	Model* modelFighterR_arm_;
-	
+	// Model* model_;
+	Model* modelFighterBody_   = nullptr;
+	Model* modelFighterHead_   = nullptr;
+	Model* modelFighterL_arm_  = nullptr;
+	Model* modelFighterR_arm_  = nullptr;
+
 	// Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
-
 };

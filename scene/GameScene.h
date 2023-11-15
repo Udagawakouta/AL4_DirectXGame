@@ -71,6 +71,8 @@ private: // メンバ変数
 	DebugCamera* debugcamera_ = nullptr;
 	// 自キャラ
 	std::unique_ptr<Player> player_;
+
+
 	// 天球
 	Skydome* skydome_ = nullptr;
 	// 3D天球モデル
@@ -79,6 +81,8 @@ private: // メンバ変数
 	Ground* ground_ = nullptr;
 	// 3D地面モデル
 	Model* modelGround_ = nullptr;
+
+
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 
