@@ -17,51 +17,11 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
-Player::~Player() { 
-
+void Player::Initialize(const std::vector<Model*>& models) {
+	// 基底クラスの初期化
+	BaseCharacter::Initialize(models);
 }
 
-void Player::Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm) {
-	// NULLポインタチェック
-	assert(modelBody);
-	assert(modelHead);
-	assert(modelL_arm);
-	assert(modelR_arm);
-
-	// 引数として受け取ったデータをメンバ変数に記録する
-	modelFighterBody_ = modelBody;
-	modelFighterHead_ = modelHead;
-	modelFighterL_arm_ = modelL_arm;
-	modelFighterR_arm_ = modelR_arm;
-	// textureHandle_ = textureHandle;
-
-#pragma region モデルの設定
-
-	// 腕の座標指定
-	worldtransformHead_.translation_.y = 1.5f;
-	worldtransformL_arm_.translation_.x = -0.5f;
-	worldtransformR_arm_.translation_.x = 0.5f;
-	worldtransformL_arm_.translation_.y = 1.3f;
-	worldtransformR_arm_.translation_.y = 1.3f;
-
-#pragma endregion
-
-	// ワールドトランスフォームの初期化
-	worldtransformBase_.Initialize();
-	// X,Y,Z方向のスケーリングを設定
-	worldtransformBase_.scale_ = {1.0f, 1.0f, 1.0f};
-	worldtransformBase_.translation_ = {0.0f, 2.0f, -5.0f};
-
-	worldtransformBody_.Initialize();
-	worldtransformHead_.Initialize();
-	worldtransformL_arm_.Initialize();
-	worldtransformR_arm_.Initialize();
-
-	worldtransformBody_.parent_ = &worldtransformBase_;
-	worldtransformHead_.parent_ = &worldtransformBody_;
-	worldtransformL_arm_.parent_ = &worldtransformBody_;
-	worldtransformR_arm_.parent_ = &worldtransformBody_;
-}
 
 void Player::Update() {
 
@@ -100,14 +60,12 @@ void Player::Update() {
 	worldtransformHead_.UpdateMatrix();
 	worldtransformL_arm_.UpdateMatrix();
 	worldtransformR_arm_.UpdateMatrix();
+
+	BaseCharacter::Update();
 }
 
-void Player::Draw(ViewProjection& viewprojection) {
-	// model_->Draw(worldtransform_, viewprojection, textureHandle_);
-	modelFighterBody_->Draw(worldtransformBody_, viewprojection);
-	modelFighterHead_->Draw(worldtransformHead_, viewprojection);
-	modelFighterL_arm_->Draw(worldtransformL_arm_, viewprojection);
-	modelFighterR_arm_->Draw(worldtransformR_arm_, viewprojection);
+void Player::Draw(ViewProjection& viewprojection) { 
+	BaseCharacter::Draw(viewprojection);
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }

@@ -2,8 +2,9 @@
 
 #include "Model.h"
 #include "WorldTransform.h"
+#include "BaseCharacter.h"
 
-class Player {
+class Player:public BaseCharacter {
 public:
 	Vector3 GetWorldPosition();
 
@@ -13,10 +14,8 @@ public:
 		viewprojection_ = viewprojection;
 	}
 
-	~Player();
-
 	// 初期化
-	void Initialize(Model* modelBody, Model* modelHead, Model* modelL_arm, Model* modelR_arm);
+	void Initialize(const std::vector<Model*>& models) override;
 	// 更新処理
 	void Update();
 	// 描画処理

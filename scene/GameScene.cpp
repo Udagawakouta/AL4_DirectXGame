@@ -32,11 +32,16 @@ void GameScene::Initialize() {
 
 
 	// 自キャラの生成
-	player_ = std::make_unique<Player>();
+	std::vector<Model*> playerModels = {
+	    modelFighterBody_.get(),
+		modelFighterHead_.get(),
+		modelFighterL_arm_.get(),
+	    modelFighterR_arm_.get()
+	};
+
 	// 自キャラの初期化
-	player_->Initialize(
-	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
-	    modelFighterR_arm_.get());
+	player_->Initialize(playerModels);
+
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
