@@ -20,6 +20,25 @@ Vector3 Player::GetWorldPosition() {
 void Player::Initialize(const std::vector<Model*>& models) {
 	// 基底クラスの初期化
 	BaseCharacter::Initialize(models);
+
+	worldtransformBase_.Initialize();
+	worldtransformBody_.Initialize();
+	worldtransformHead_.Initialize();
+	worldtransformL_arm_.Initialize();
+	worldtransformR_arm_.Initialize();
+
+	// 親子関係結ぶ
+	worldtransformBody_.parent_ = &worldtransformBase_; // ボディの親をベースにする
+	worldtransformHead_.parent_ = &worldtransformBody_;
+	worldtransformL_arm_.parent_ = &worldtransformBody_;
+	worldtransformR_arm_.parent_ = &worldtransformBody_;
+
+	// 各パーツ位置調整
+	worldtransform_.translation_.x = 1.0f;
+	worldtransform_.translation_.y = 1.0f;
+	worldtransform_.translation_.z = 1.0f;
+
+	
 }
 
 

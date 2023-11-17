@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "WorldTransform.h"
 #include "Model.h"
@@ -7,12 +7,12 @@
 
 class Enemy:public BaseCharacter {
 public:
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize(const std::vector<Model*>& models) override;
 
-	// XV
+	// æ›´æ–°
 	void Update() override;
 
-	// •`‰æ
+	// æç”»
 	void Draw(const ViewProjection& viewProjection) override;
 };

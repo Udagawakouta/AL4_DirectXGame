@@ -30,7 +30,6 @@ void GameScene::Initialize() {
 	// model_.reset(Model::Create());
 
 
-
 	// 自キャラの生成
 	std::vector<Model*> playerModels = {
 	    modelFighterBody_.get(),
@@ -38,6 +37,9 @@ void GameScene::Initialize() {
 		modelFighterL_arm_.get(),
 	    modelFighterR_arm_.get()
 	};
+
+	// 自キャラの生成
+	player_ = std::make_unique<Player>();
 
 	// 自キャラの初期化
 	player_->Initialize(playerModels);
@@ -57,7 +59,7 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
 	// 天球の生成
-	skydome_ = new Skydome();
+	skydome_ = std::make_unique<Skydome>();
 	// 天球初期化
 	skydome_->Initialize(modelSkydome_);
 #pragma endregion
@@ -67,7 +69,7 @@ void GameScene::Initialize() {
 	modelGround_ = Model::CreateFromOBJ("ground", true);
 
 	// 地面の生成
-	ground_ = new Ground();
+	ground_ = std::make_unique<Ground>();
 	// 地面初期化
 	ground_->Initialize(modelGround_);
 #pragma endregion
