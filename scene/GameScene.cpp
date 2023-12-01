@@ -4,8 +4,7 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {
-}
+GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 
@@ -20,17 +19,32 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 3Dモデルの生成
-	// modelPlayer_.reset(Model::CreateFromOBJ("Player", true));
+	// プレイヤーモデルの生成
 	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
 	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
 
-	// model_.reset(Model::Create());
+	// エネミーモデルの生成
+	enemyFighterBody_.reset(Model::CreateFromOBJ("needle_Body", true));
+	enemyFighterL_arm_.reset(Model::CreateFromOBJ("needle_L_arm", true));
+	enemyFighterR_arm_.reset(Model::CreateFromOBJ("needle_R_arm", true));
+
+#pragma region エネミーモデル
+	// エネミーモデル
+	std::vector<Model*> enemyModels = {
+	    enemyFighterBody_.get(), enemyFighterL_arm_.get(), enemyFighterR_arm_.get()};
+
+	// エネミーの生成
+	enemy_ = std::make_unique<Enemy>();
+
+	// エネミーの初期化
+	enemy_->Initialize(enemyModels);
+#pragma endregion
 
 
-	// 自キャラの生成
+#pragma region 自キャラモデル
+	// 自キャラモデル
 	std::vector<Model*> playerModels = {
 	    modelFighterBody_.get(),
 		modelFighterHead_.get(),
@@ -43,6 +57,8 @@ void GameScene::Initialize() {
 
 	// 自キャラの初期化
 	player_->Initialize(playerModels);
+#pragma endregion
+
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -109,6 +125,9 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
+	// 敵キャラの更新
+	enemy_->Update();
+
 	// 天球
 	skydome_->Update();
 
@@ -146,6 +165,9 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
+
+	// 敵の描画
+	enemy_->Draw(viewProjection_);
 
 	// 天球の描画
 	skydome_->Draw(viewProjection_);

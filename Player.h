@@ -17,9 +17,9 @@ public:
 	// 初期化
 	void Initialize(const std::vector<Model*>& models) override;
 	// 更新処理
-	void Update();
+	void Update() override;
 	// 描画処理
-	void Draw(ViewProjection& viewprojection);
+	void Draw(const ViewProjection& viewprojection) override;
 
 	// 浮遊ギミック初期化
 	void InitializeFloatingGimmick();
@@ -31,7 +31,6 @@ public:
 
 private:
 	// ワールド変換データ
-	//WorldTransform worldtransform_;
 	WorldTransform worldtransformBase_;
 	WorldTransform worldtransformBody_;
 	WorldTransform worldtransformHead_;
@@ -40,14 +39,13 @@ private:
 
 	// カメラのビュープロジェクション
 	const ViewProjection* viewprojection_ = nullptr;
+	
 	// 3Dモデル
-	// Model* model_;
 	Model* modelFighterBody_   = nullptr;
 	Model* modelFighterHead_   = nullptr;
 	Model* modelFighterL_arm_  = nullptr;
 	Model* modelFighterR_arm_  = nullptr;
 
-	// Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 };

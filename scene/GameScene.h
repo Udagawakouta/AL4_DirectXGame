@@ -14,6 +14,7 @@
 #include "Skydome.h"
 #include "Ground.h"
 #include "FollowCamera.h"
+#include "Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -52,13 +53,22 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	// スプライト
 	Sprite* sprite_ = nullptr;
-	// 3Dモデルデータ
+
+	// プレイヤーモデルデータ
 	std::unique_ptr<Model> modelPlayer_;
-	// 3Dモデル
+	// プレイヤーモデル
 	std::unique_ptr<Model> modelFighterBody_;
 	std::unique_ptr<Model> modelFighterHead_;
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
+
+	// エネミーモデルデータ
+	std::unique_ptr<Model> modelEnemy_;
+	// エネミーモデル
+	std::unique_ptr<Model> enemyFighterBody_;
+	std::unique_ptr<Model> enemyFighterHead_;
+	std::unique_ptr<Model> enemyFighterL_arm_;
+	std::unique_ptr<Model> enemyFighterR_arm_;
 
 	// std::unique_ptr<Model> model_;
 	// ワールドトランスフォーム
@@ -71,7 +81,8 @@ private: // メンバ変数
 	DebugCamera* debugcamera_ = nullptr;
 	// 自キャラ
 	std::unique_ptr<Player> player_;
-
+	// 敵キャラ
+	std::unique_ptr<Enemy> enemy_;
 
 	// 天球
 	std::unique_ptr <Skydome> skydome_ = nullptr;
