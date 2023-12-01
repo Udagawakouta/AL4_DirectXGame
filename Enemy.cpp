@@ -37,7 +37,23 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 }
 
 void Enemy::Update() { 
+
+	// 速さ
+	const float kSpeed = 0.3f;
+	Vector3 velocity{0.0f, 0.0f, kSpeed};
+
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(worldtransformBase_.rotation_);
+
+	// 自機のY軸回り
+	worldtransformBase_.rotation_.y += 0.03f;
+
+	// 移動ベクトルを敵の角度だけ回転
+	velocity = TransformNormal(velocity, worldtransformBase_.matWorld_);
+
+	// 移動量
+	worldtransformBase_.translation_ = Add(worldtransformBase_.translation_, velocity);
 	// 行列を定数バッファに転送
+	worldtransformBase_.UpdateMatrix();
 	worldtransformBody_.UpdateMatrix();
 	worldtransformL_arm_.UpdateMatrix();
 	worldtransformR_arm_.UpdateMatrix();
