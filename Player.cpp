@@ -27,6 +27,9 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldtransformL_arm_.Initialize();
 	worldtransformR_arm_.Initialize();
 
+	// 武器の初期化
+	worldtransformWeapon_.Initialize();
+
 	// 親子関係結ぶ
 	worldtransformBody_.parent_ = &worldtransformBase_; // ボディの親をベースにする
 	worldtransformHead_.parent_ = &worldtransformBody_;
@@ -88,6 +91,25 @@ void Player::Update() {
 	worldtransformR_arm_.UpdateMatrix();
 
 	BaseCharacter::Update();
+
+	if (behaviorRequest_) {
+		// 振る舞いを変更する
+		behavior_ = behaviorRequest_.value();
+		// 各振る舞いごとの初期化を実行
+		switch (behavior_) {
+		case Behavior::kRoot:
+		default:
+			BehaviorRootInitialize();
+			break;
+		case Player::Behavior::kAttack:
+			BehaviorAttackInitialize();
+			break;
+		}
+		// 振る舞いリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+
+
 }
 
 void Player::Draw(const ViewProjection& viewprojection) { 
@@ -119,4 +141,50 @@ void Player::UpdateFloatingGimmick() {
 	// 腕の動き
 	worldtransformL_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
 	worldtransformR_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
+}
+
+
+void Player::BehaviorRootInitialize() { 
+	worldtransformL_arm_.rotation_.x = 0.0f;
+	worldtransformR_arm_.rotation_.x = 0.0f;
+	worldtransformWeapon_.rotation_.x = 0.0f;
+	
+	// 浮遊初期化
+	InitializeFloatingGimmick();
+
+	worldtransformBody_.Initialize();
+	worldtransformHead_.Initialize();
+	worldtransformL_arm_.Initialize();
+	worldtransformR_arm_.Initialize();
+	worldtransformWeapon_.Initialize();
+}
+
+void Player::BehaviorRootUpdate() { 
+	XINPUT_STATE joyState;
+	// ゲームパッド状態取得
+	if (Input::GetInstance()->GetJoystickState(0,joyState)) {
+		// 速さ
+		const float speed = 0.3f;
+		// 移動量
+		Vector3 move{
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
+		// 移動量の速さを反映
+		move = Multiply(speed, Normalize(move));
+
+		// 回転行列
+		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_->rotation_);
+	}
+	// 浮遊ギミックの更新処理
+	UpdateFloatingGimmick();
+}
+
+void Player::BehaviorAttackInitialize() {
+
+
+}
+
+void Player::BehaviorAttackUpdate() {
+
+
 }

@@ -62,6 +62,9 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelFighterL_arm_;
 	std::unique_ptr<Model> modelFighterR_arm_;
 
+	// 武器モデル
+	std::unique_ptr<Model> modelWeapon_;
+
 	// エネミーモデルデータ
 	std::unique_ptr<Model> modelEnemy_;
 	// エネミーモデル
