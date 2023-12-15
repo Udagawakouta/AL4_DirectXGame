@@ -43,4 +43,4 @@ Vector3 Normalize(const Vector3& v);
 // 逆行列
 Matrix4x4 Inverse(const Matrix4x4& m);
 
-Vector3 Multiply2(const float& v1, const Vector3& v2);
+Vector3 Multiply(const float& v1, const Vector3& v2);

@@ -45,7 +45,7 @@ public:
 	// 通常行動更新
 	void BehaviorRootUpdate();
 
-	// 攻撃行動更新
+	// 攻撃行動初期化
 	void BehaviorAttackInitialize();
 	// 攻撃行動更新
 	void BehaviorAttackUpdate();
@@ -74,7 +74,9 @@ private:
 	Model* modelFighterL_arm_  = nullptr;
 	Model* modelFighterR_arm_  = nullptr;
 
-
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	// 攻撃フレーム
+	int attackFrame;
 };

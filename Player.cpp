@@ -41,7 +41,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldtransform_.translation_.y = 1.0f;
 	worldtransform_.translation_.z = 1.0f;
 
-	worldtransformBody_.translation_ = {0.0f,1.0f,0.0f};
+	worldtransformBody_.translation_ = {0.0f, 1.0f, 0.0f};
 
 	// 腕の座標指定
 	worldtransformHead_.translation_.y = 1.5f;
@@ -50,7 +50,6 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldtransformL_arm_.translation_.y = 1.3f;
 	worldtransformR_arm_.translation_.y = 1.3f;
 }
-
 
 void Player::Update() {
 
@@ -67,7 +66,7 @@ void Player::Update() {
 		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * Speed};
 		// 移動量に速さを反映
 		move = Normalize(move);
-		move = Multiply2(Speed, move);
+		move = Multiply(Speed, move);
 
 		// 回転行列
 		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_->rotation_);
@@ -89,9 +88,11 @@ void Player::Update() {
 	worldtransformHead_.UpdateMatrix();
 	worldtransformL_arm_.UpdateMatrix();
 	worldtransformR_arm_.UpdateMatrix();
+	worldtransformWeapon_.UpdateMatrix();
 
 	BaseCharacter::Update();
 
+	// Behaviorの初期化
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -109,18 +110,26 @@ void Player::Update() {
 		behaviorRequest_ = std::nullopt;
 	}
 
-
+	// Behaviorの更新処理
+	switch (behavior_) {
+	case Behavior::kRoot:
+	default:
+		BehaviorRootUpdate();
+		break;
+	case Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
+	}
 }
 
-void Player::Draw(const ViewProjection& viewprojection) { 
-	//BaseCharacter::Draw(viewprojection);
-
-	// models_ {body, head, LArm,RArm};
-	// models_[0]->Draw(worldtransformBase_,viewprojection);
+void Player::Draw(const ViewProjection& viewprojection) {
 	models_[0]->Draw(worldtransformBody_, viewprojection);
 	models_[1]->Draw(worldtransformHead_, viewprojection);
 	models_[2]->Draw(worldtransformL_arm_, viewprojection);
 	models_[3]->Draw(worldtransformR_arm_, viewprojection);
+	if (behavior_==Behavior::kAttack) {
+		models_[4]->Draw(worldtransformWeapon_, viewprojection);
+	}
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -143,12 +152,11 @@ void Player::UpdateFloatingGimmick() {
 	worldtransformR_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
 }
 
-
-void Player::BehaviorRootInitialize() { 
+void Player::BehaviorRootInitialize() {
 	worldtransformL_arm_.rotation_.x = 0.0f;
 	worldtransformR_arm_.rotation_.x = 0.0f;
 	worldtransformWeapon_.rotation_.x = 0.0f;
-	
+
 	// 浮遊初期化
 	InitializeFloatingGimmick();
 
@@ -159,10 +167,10 @@ void Player::BehaviorRootInitialize() {
 	worldtransformWeapon_.Initialize();
 }
 
-void Player::BehaviorRootUpdate() { 
+void Player::BehaviorRootUpdate() {
 	XINPUT_STATE joyState;
 	// ゲームパッド状態取得
-	if (Input::GetInstance()->GetJoystickState(0,joyState)) {
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
 		const float speed = 0.3f;
 		// 移動量
@@ -174,17 +182,37 @@ void Player::BehaviorRootUpdate() {
 
 		// 回転行列
 		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_->rotation_);
+		// 移動ベクトルをカメラの角度だけ回転
+		move = TransformNormal(move, rotateMatrix);
 	}
 	// 浮遊ギミックの更新処理
 	UpdateFloatingGimmick();
 }
 
 void Player::BehaviorAttackInitialize() {
-
-
+	worldtransformL_arm_.rotation_.x = (float)M_PI;
+	worldtransformR_arm_.rotation_.x = (float)M_PI;
+	worldtransformWeapon_.rotation_.x = 0.0f;
+	attackFrame = 0;
 }
 
 void Player::BehaviorAttackUpdate() {
+	if (attackFrame < 10) {
+		// 腕
+		worldtransformL_arm_.rotation_.x -= 0.05f;
+		worldtransformR_arm_.rotation_.x -= 0.05f;
 
-
+		// 武器
+		worldtransformWeapon_.rotation_.x -= 0.05f;
+	} else if (worldtransformWeapon_.rotation_.x <= 2.0f * (float)M_PI / 4) {
+		// 腕
+		worldtransformL_arm_.rotation_.x += 0.1f;
+		worldtransformR_arm_.rotation_.x += 0.1f;
+		// 武器
+		worldtransformWeapon_.rotation_.x += 0.1f;
+	} else {
+		// 振る舞いリセット
+		behaviorRequest_ = Behavior::kRoot;
+	}
+	attackFrame++;
 }

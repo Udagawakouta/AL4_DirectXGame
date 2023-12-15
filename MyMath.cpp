@@ -394,7 +394,7 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 	return result;
 };
 
-Vector3 Multiply2(const float& v1, const Vector3& v2) {
+Vector3 Multiply(const float& v1, const Vector3& v2) {
 	Vector3 result{};
 	result.x = v1 * v2.x;
 	result.y = v1 * v2.y;
