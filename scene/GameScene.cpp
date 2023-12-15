@@ -25,6 +25,9 @@ void GameScene::Initialize() {
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
 
+	// プレイヤー武器モデル
+	modelWeapon_.reset(Model::CreateFromOBJ("hammer", true));
+
 	// エネミーモデルの生成
 	enemyFighterBody_.reset(Model::CreateFromOBJ("needle_Body", true));
 	enemyFighterL_arm_.reset(Model::CreateFromOBJ("needle_L_arm", true));
@@ -42,23 +45,19 @@ void GameScene::Initialize() {
 	enemy_->Initialize(enemyModels);
 #pragma endregion
 
-
 #pragma region 自キャラモデル
 	// 自キャラモデル
 	std::vector<Model*> playerModels = {
-	    modelFighterBody_.get(),
-		modelFighterHead_.get(),
-		modelFighterL_arm_.get(),
-	    modelFighterR_arm_.get()
-	};
+	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
+	    modelFighterR_arm_.get(), modelWeapon_.get()};
 
 	// 自キャラの生成
 	player_ = std::make_unique<Player>();
 
 	// 自キャラの初期化
 	player_->Initialize(playerModels);
-#pragma endregion
 
+#pragma endregion
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();

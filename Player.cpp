@@ -53,44 +53,34 @@ void Player::Initialize(const std::vector<Model*>& models) {
 
 void Player::Update() {
 
-	// ゲームパッドの状態を得る変数(XINPUT)
-	XINPUT_STATE joyState;
+	//// ゲームパッドの状態を得る変数(XINPUT)
+	//XINPUT_STATE joyState;
 
-	// ゲームパッド状態
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		// キャラクターの移動速さ
-		const float Speed = 0.3f;
-		// 移動量
-		Vector3 move = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * Speed, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * Speed};
-		// 移動量に速さを反映
-		move = Normalize(move);
-		move = Multiply(Speed, move);
+	//// ゲームパッド状態
+	//if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+	//	// キャラクターの移動速さ
+	//	const float Speed = 0.3f;
+	//	// 移動量
+	//	Vector3 move = {
+	//	    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * Speed, 0.0f,
+	//	    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * Speed};
+	//	// 移動量に速さを反映
+	//	move = Normalize(move);
+	//	move = Multiply(Speed, move);
 
-		// 回転行列
-		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_->rotation_);
-		// 移動ベクトルをカメラの角度だけ回転
-		move = TransformNormal(move, rotateMatrix);
+	//	// 回転行列
+	//	Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_->rotation_);
+	//	// 移動ベクトルをカメラの角度だけ回転
+	//	move = TransformNormal(move, rotateMatrix);
 
-		// 移動
-		worldtransformBase_.translation_ = Add(worldtransformBase_.translation_, move);
+	//	// 移動
+	//	worldtransformBase_.translation_ = Add(worldtransformBase_.translation_, move);
 
-		// playerのY軸周り角度(θy)
-		worldtransformBase_.rotation_.y = std::atan2(move.x, move.z);
-	}
+	//	// playerのY軸周り角度(θy)
+	//	worldtransformBase_.rotation_.y = std::atan2(move.x, move.z);
+	//}
 
-	UpdateFloatingGimmick();
-
-	// 行列を定数バッファに転送
-	worldtransformBase_.UpdateMatrix();
-	worldtransformBody_.UpdateMatrix();
-	worldtransformHead_.UpdateMatrix();
-	worldtransformL_arm_.UpdateMatrix();
-	worldtransformR_arm_.UpdateMatrix();
-	worldtransformWeapon_.UpdateMatrix();
-
-	BaseCharacter::Update();
+	//UpdateFloatingGimmick();
 
 	// Behaviorの初期化
 	if (behaviorRequest_) {
@@ -120,6 +110,14 @@ void Player::Update() {
 		BehaviorAttackUpdate();
 		break;
 	}
+	BaseCharacter::Update();
+	// 行列を定数バッファに転送
+	worldtransformBase_.UpdateMatrix();
+	worldtransformBody_.UpdateMatrix();
+	worldtransformHead_.UpdateMatrix();
+	worldtransformL_arm_.UpdateMatrix();
+	worldtransformR_arm_.UpdateMatrix();
+	worldtransformWeapon_.UpdateMatrix();
 }
 
 void Player::Draw(const ViewProjection& viewprojection) {
@@ -127,7 +125,9 @@ void Player::Draw(const ViewProjection& viewprojection) {
 	models_[1]->Draw(worldtransformHead_, viewprojection);
 	models_[2]->Draw(worldtransformL_arm_, viewprojection);
 	models_[3]->Draw(worldtransformR_arm_, viewprojection);
-	if (behavior_==Behavior::kAttack) {
+
+	if (behavior_ == Behavior::kAttack)
+	{
 		models_[4]->Draw(worldtransformWeapon_, viewprojection);
 	}
 }
@@ -184,6 +184,17 @@ void Player::BehaviorRootUpdate() {
 		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_->rotation_);
 		// 移動ベクトルをカメラの角度だけ回転
 		move = TransformNormal(move, rotateMatrix);
+		
+		if (joyState.Gamepad.wButtons == XINPUT_GAMEPAD_A)
+		{
+			// 振る舞いリセット
+			behaviorRequest_ = Behavior::kAttack;
+			worldtransformWeapon_.rotation_.x = 1.0f;
+			worldtransformWeapon_.translation_.y = 2.0f;
+			worldtransformL_arm_.rotation_.x = 1.0f;
+			worldtransformR_arm_.rotation_.x = 1.0f;
+		}
+
 	}
 	// 浮遊ギミックの更新処理
 	UpdateFloatingGimmick();
