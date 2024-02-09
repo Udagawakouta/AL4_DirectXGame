@@ -20,14 +20,14 @@ void GameClear::Initialize() {
 
 	GameClearSprite_ = Sprite::Create(Clear, {0, 0});
 
-	fadeTextureHandle = TextureManager::Load("fade.png");
-	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});
+	/*fadeTextureHandle = TextureManager::Load("fade.png");
+	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});*/
 }
 
 void GameClear::Update() {
 
-	fadeColor.w -= 0.020f;
-	fadeSprite_->SetColor(fadeColor);
+	/*fadeColor.w -= 0.020f;
+	fadeSprite_->SetColor(fadeColor);*/
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
@@ -38,8 +38,8 @@ void GameClear::Update() {
 }
 
 void GameClear::Reset() {
-	fadeColor = {1.0f, 1.0f, 1.0f, 1.0f};
-	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});
+	/*fadeColor = {1.0f, 1.0f, 1.0f, 1.0f};
+	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});*/
 	isSceneEnd = false;
 }
 
@@ -50,7 +50,7 @@ void GameClear::Draw() {
 	Sprite::PreDraw(commandList);
 
 	GameClearSprite_->Draw();
-	fadeSprite_->Draw();
+	/*fadeSprite_->Draw();*/
 	Sprite::PostDraw();
 
 	dxCommom_->ClearDepthBuffer();

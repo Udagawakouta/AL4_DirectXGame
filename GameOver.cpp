@@ -21,15 +21,15 @@ void GameOver::Initialize() {
 
 	GameoverSprite_ = Sprite::Create(end, {0, 0});
 
-	fadeTextureHandle = TextureManager::Load("fade.png");
+	/*fadeTextureHandle = TextureManager::Load("fade.png");
 
-	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});
+	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});*/
 }
 
 void GameOver::Update() {
 
-	fadeColor.w -= 0.020f;
-	fadeSprite_->SetColor(fadeColor);
+	//fadeColor.w -= 0.020f;
+	//fadeSprite_->SetColor(fadeColor);
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
@@ -42,8 +42,8 @@ void GameOver::Update() {
 
 void GameOver::Reset() {
 
-	fadeColor = {1.0f, 1.0f, 1.0f, 1.0f};
-	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});
+	/*fadeColor = {1.0f, 1.0f, 1.0f, 1.0f};
+	fadeSprite_ = Sprite::Create(fadeTextureHandle, {0, 0}, {1, 1, 1, 1});*/
 	isSceneEnd = false;
 }
 
@@ -54,7 +54,7 @@ void GameOver::Draw() {
 	Sprite::PreDraw(commandList);
 
 	GameoverSprite_->Draw();
-	fadeSprite_->Draw();
+	/*fadeSprite_->Draw();*/
 
 	Sprite::PostDraw();
 
