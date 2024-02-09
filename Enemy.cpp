@@ -2,6 +2,7 @@
 #include "MyMath.h"
 #define _USE_MATH_DEFINES
 #include "math.h"
+#include "GameScene.h"
 
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数
@@ -29,11 +30,14 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldtransformR_arm_.parent_ = &worldtransformBody_;
 
 	// 腕の座標指定
-	worldtransformBody_.translation_.z = 8.0f;
+	worldtransformBody_.translation_.z = 0.0f;
 	worldtransformL_arm_.translation_.x = -1.0f;
 	worldtransformR_arm_.translation_.x = 1.0f;
 	worldtransformL_arm_.translation_.y = 1.0f;
 	worldtransformR_arm_.translation_.y = 1.0f;
+
+	// ICO_ = Model::CreateFromOBJ("ico", false);
+
 }
 
 void Enemy::Update() { 
@@ -62,8 +66,15 @@ void Enemy::Update() {
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) { 
-	
+	// ICO_->Draw(worldtransformBase_, viewProjection);
+	if (isDead_ == true) {
 	models_[0]->Draw(worldtransformBody_, viewProjection);
 	models_[1]->Draw(worldtransformL_arm_, viewProjection);
 	models_[2]->Draw(worldtransformR_arm_, viewProjection);
+	}
+}
+
+void Enemy::OnCollision() {
+
+	isDead_ = false; 
 }

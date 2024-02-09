@@ -1,6 +1,10 @@
 ﻿#include "GameScene.h"
+#include "Enemy.h"
+#include "Player.h"
 #include "TextureManager.h"
+#include "list"
 #include <cassert>
+#include "ImGuiManager.h"
 
 GameScene::GameScene() {}
 
@@ -42,15 +46,11 @@ void GameScene::Initialize() {
 	enemy_->Initialize(enemyModels);
 #pragma endregion
 
-
 #pragma region 自キャラモデル
 	// 自キャラモデル
 	std::vector<Model*> playerModels = {
-	    modelFighterBody_.get(),
-		modelFighterHead_.get(),
-		modelFighterL_arm_.get(),
-	    modelFighterR_arm_.get()
-	};
+	    modelFighterBody_.get(), modelFighterHead_.get(), modelFighterL_arm_.get(),
+	    modelFighterR_arm_.get()};
 
 	// 自キャラの生成
 	player_ = std::make_unique<Player>();
@@ -58,7 +58,6 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(playerModels);
 #pragma endregion
-
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -133,6 +132,10 @@ void GameScene::Update() {
 
 	// 地面
 	ground_->Update();
+
+
+	CheckAllCollisions();
+
 }
 
 void GameScene::Draw() {
@@ -147,6 +150,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -191,6 +195,41 @@ void GameScene::Draw() {
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+
+#pragma endregion
+}
+
+void GameScene::CheckAllCollisions() {
+	Vector3 posA, posB;
+
+	posA = player_->GetWorldPosition();
+
+#pragma region プレイヤーと敵の当たり判定
+	posB = enemy_->GetWorldPosition();
+
+	float dx = posA.x - posB.x;
+	float dy = posA.y - posB.y;
+	float dz = posA.z - posB.z;
+
+	float dist = sqrtf(dx * dx + dy * dy + dz * dz);
+	
+	float A[] = {posA.x, posA.y, posA.z};
+	float B[] = {posB.x, posB.y, posB.z};
+
+	ImGui::Begin("Begin");
+
+	ImGui::DragFloat("dist", &dist);
+	ImGui::DragFloat3("playerPos", A);
+	ImGui::DragFloat3("EnemyPos", B);
+	ImGui::End();
+
+	if (dist <= 0.1f + 0.1f) {
+		// 自キャラのコールバック
+		player_->OnCollision();
+
+		// 敵キャラのコールバック
+		enemy_->OnCollision();
+	}
 
 #pragma endregion
 }

@@ -18,6 +18,11 @@ public:
 	// 描画
 	void Draw(const ViewProjection& viewProjection) override;
 
+	// 当たり判定
+	void OnCollision();
+
+	bool IsDead() const { return isDead_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldtransformBase_;
@@ -32,7 +37,11 @@ private:
 	Model* enemyFighterBody_ = nullptr;
 	Model* enemyFighterL_arm_ = nullptr;
 	Model* enemyFighterR_arm_ = nullptr;
-
+	Model* ICO_;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	// 死亡フラグ
+	bool isDead_ = true;
+ 
 };

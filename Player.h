@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "BaseCharacter.h"
+#include "list"
 
 class Player:public BaseCharacter {
 public:
@@ -26,8 +27,13 @@ public:
 	// 浮遊ギミック更新
 	void UpdateFloatingGimmick();
 
+	// 当たり判定
+	void OnCollision();
+
 	// 浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
+
+	bool IsDead() const { return isDead_; }
 
 private:
 	// ワールド変換データ
@@ -46,6 +52,11 @@ private:
 	Model* modelFighterL_arm_  = nullptr;
 	Model* modelFighterR_arm_  = nullptr;
 
+	Model* ICO_;
+
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	// 死亡フラグ
+	bool isDead_ = false;
 };

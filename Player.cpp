@@ -38,7 +38,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldtransform_.translation_.y = 1.0f;
 	worldtransform_.translation_.z = 1.0f;
 
-	worldtransformBody_.translation_ = {0.0f,1.0f,0.0f};
+	worldtransformBody_.translation_ = {0.0f, 0.0f, 0.0f};
 
 	// 腕の座標指定
 	worldtransformHead_.translation_.y = 1.5f;
@@ -46,8 +46,9 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldtransformR_arm_.translation_.x = 0.5f;
 	worldtransformL_arm_.translation_.y = 1.3f;
 	worldtransformR_arm_.translation_.y = 1.3f;
-}
 
+	// ICO_ = Model::CreateFromOBJ("ico",false);
+}
 
 void Player::Update() {
 
@@ -90,11 +91,11 @@ void Player::Update() {
 	BaseCharacter::Update();
 }
 
-void Player::Draw(const ViewProjection& viewprojection) { 
-	//BaseCharacter::Draw(viewprojection);
+void Player::Draw(const ViewProjection& viewprojection) {
+	// BaseCharacter::Draw(viewprojection);
 
 	// models_ {body, head, LArm,RArm};
-	// models_[0]->Draw(worldtransformBase_,viewprojection);
+	// ICO_->Draw(worldtransformBase_, viewprojection);
 	models_[0]->Draw(worldtransformBody_, viewprojection);
 	models_[1]->Draw(worldtransformHead_, viewprojection);
 	models_[2]->Draw(worldtransformL_arm_, viewprojection);
@@ -115,8 +116,10 @@ void Player::UpdateFloatingGimmick() {
 	// 浮遊の振幅<m>
 	const float floatingAmplitude = 0.5f;
 	// 浮遊を座標に反映
-	worldtransformBase_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+	worldtransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
 	// 腕の動き
 	worldtransformL_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
 	worldtransformR_arm_.rotation_.x = std::sin(floatingParameter_) * 0.75f;
 }
+
+void Player::OnCollision() {}
