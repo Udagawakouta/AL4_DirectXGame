@@ -35,6 +35,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldtransformHead_.parent_ = &worldtransformBody_;
 	worldtransformL_arm_.parent_ = &worldtransformBody_;
 	worldtransformR_arm_.parent_ = &worldtransformBody_;
+	worldtransformWeapon_.parent_ = &worldtransformBody_;
 
 	// 各パーツ位置調整
 	worldtransform_.translation_.x = 1.0f;
