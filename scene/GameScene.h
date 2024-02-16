@@ -15,6 +15,7 @@
 #include "Ground.h"
 #include "FollowCamera.h"
 #include "Enemy.h"
+#include "Scene.h"
 
 /// <summary>
 /// ゲームシーン
@@ -41,6 +42,13 @@ public: // メンバ関数
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
+	bool IsSceneEnd() { return isSceneEnd_; }
+	SceneType NextScene() {
+
+		return SceneType::kGamePlay; 
+	
+
+	}
 
 	/// <summary>
 	/// 描画
@@ -109,4 +117,7 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	bool isSceneEnd_ = false;
+
+
 };

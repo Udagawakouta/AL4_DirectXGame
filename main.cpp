@@ -58,6 +58,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer->Initialize();
 #pragma endregion
 
+	SceneType scene = SceneType::kTitle;
+
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
@@ -73,8 +75,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update();
+
+		// ここにシーンの更新を切り替える switch
 		// ゲームシーンの毎フレーム処理
-		gameScene->Update();
+		switch (scene) {
+		case SceneType::kTitle:
+			
+			break;
+		
+		case SceneType::kGamePlay:
+			gameScene->Update();
+
+			if (gameScene->IsSceneEnd()) {
+				scene = gameScene->NextScene();
+				
+			}
+			break;
+		
+		case SceneType::kGameOver:
+			break;
+		
+		case SceneType::kGameClear:
+			break;
+		}
+		
+		
 		// 軸表示の更新
 		axisIndicator->Update();
 		// ImGui受付終了
@@ -82,8 +107,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画開始
 		dxCommon->PreDraw();
+		
+
+		// ここにシーンの描画を切り替える switch
 		// ゲームシーンの描画
 		gameScene->Draw();
+		
+		
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット
