@@ -12,7 +12,7 @@ void FollowCamera::Initialize() {
 void FollowCamera::Update() {
 	if (target_) {
 		// 追従対象からカメラまでのオフセット
-		Vector3 offset = {0.0f, 2.0f, -20.0f};
+		Vector3 offset = {0.0f, 5.0f, -20.0f};
 		// カメラの角度から回転行列を計算
 		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewprojection_.rotation_);
 
@@ -23,10 +23,10 @@ void FollowCamera::Update() {
 		viewprojection_.translation_ = Add(target_->translation_, offset);
 
 	}
-	XINPUT_STATE joyState;
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+	XINPUT_STATE joyState_;
+	if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
 		const float kRadian = 0.02f;
-		viewprojection_.rotation_.y += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * kRadian;
+		viewprojection_.rotation_.y += (float)joyState_.Gamepad.sThumbRX / SHRT_MAX * kRadian;
 	}
 	// ビュー行列の更新
 	viewprojection_.UpdateMatrix();

@@ -6,7 +6,9 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "WinApp.h"
-#include "GameScene.h"
+#include "TitleScene.h"
+#include "GameOver.h"
+#include "Enemy.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -18,6 +20,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
 	GameScene* gameScene = nullptr;
+	TitleScene* titleScene = nullptr;
+	GameOver* gameOver = nullptr;
+	
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -60,6 +65,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	SceneType scene = SceneType::kTitle;
 
+	// タイトルシーンの初期化
+	titleScene = new TitleScene();
+	titleScene->Initialize();
+
+	gameOver = new GameOver();
+	gameOver->Initialize();
+
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
@@ -76,23 +88,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 入力関連の毎フレーム処理
 		input->Update();
 
+		//gameScene->Update();
+
 		// ここにシーンの更新を切り替える switch
 		// ゲームシーンの毎フレーム処理
 		switch (scene) {
 		case SceneType::kTitle:
+			titleScene->Update();
 			
+			if (titleScene->isSceneEnd() == true)
+			{
+				scene = titleScene->NextScene();
+
+				gameOver->Reset();
+			}
+
 			break;
 		
 		case SceneType::kGamePlay:
 			gameScene->Update();
 
-			if (gameScene->IsSceneEnd()) {
+			if (gameScene->IsSceneEnd() == true) {
 				scene = gameScene->NextScene();
 				
 			}
 			break;
 		
 		case SceneType::kGameOver:
+
+			gameOver->Update();
+
+			if (gameOver->isSceneEnd() == true)
+			{
+				scene = gameOver->NextScene();
+
+				titleScene->Reset();
+				gameScene->Reset();
+			}
+
 			break;
 		
 		case SceneType::kGameClear:
@@ -108,10 +141,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画開始
 		dxCommon->PreDraw();
 		
+		//gameScene->Draw();
+
+		switch (scene) {
+		case SceneType::kTitle:
+			//titleScene->Update();
+			titleScene->Draw();
+			break;
+
+		case SceneType::kGamePlay:
+			gameScene->Draw();
+			break;
+
+		case SceneType::kGameOver:
+			gameOver->Draw();
+
+			break;
+
+		case SceneType::kGameClear:
+			break;
+		}
 
 		// ここにシーンの描画を切り替える switch
 		// ゲームシーンの描画
-		gameScene->Draw();
+		// gameScene->Draw();
 		
 		
 		// 軸表示の描画

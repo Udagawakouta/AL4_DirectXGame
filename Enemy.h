@@ -21,6 +21,8 @@ public:
 	// 当たり判定
 	void OnCollision();
 
+	// リセットの関数
+	
 	bool IsDead() const { return isDead_; }
 
 private:

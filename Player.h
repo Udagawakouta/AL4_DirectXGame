@@ -1,12 +1,14 @@
 ﻿#pragma once
 
+#include "input/Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
 #include "BaseCharacter.h"
+#include "PlayerBullet.h"
 #include "list"
 
 class Player:public BaseCharacter {
-public:
+public:// メンバ関数
 	Vector3 GetWorldPosition();
 
 	const WorldTransform& GetWorldTransform() { return worldtransformBase_; }
@@ -30,12 +32,20 @@ public:
 	// 当たり判定
 	void OnCollision();
 
-	// 浮遊ギミックの媒介変数
-	float floatingParameter_ = 0.0f;
+	// 攻撃
+	void Attack(); 
 
 	bool IsDead() const { return isDead_; }
 
-private:
+	// 弾リストを取得
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+
+public:// 定数
+	// 浮遊ギミックの媒介変数
+	float floatingParameter_ = 0.0f;
+	static const int32_t kLifeTime = 60 * 5;
+
+private:// メンバ変数
 	// ワールド変換データ
 	WorldTransform worldtransformBase_;
 	WorldTransform worldtransformBody_;
@@ -51,6 +61,8 @@ private:
 	Model* modelFighterHead_   = nullptr;
 	Model* modelFighterL_arm_  = nullptr;
 	Model* modelFighterR_arm_  = nullptr;
+	Model* modelBullets_ = nullptr;
+
 
 	Model* ICO_;
 
@@ -59,4 +71,15 @@ private:
 
 	// 死亡フラグ
 	bool isDead_ = false;
+
+	// 弾
+	std::list<PlayerBullet*> bullets_;
+	// デスフラグ
+	bool isEnemyDead_ = false;
+	// デスタイマー
+	int32_t deathTimer_ = kLifeTime;
+
+
+	XINPUT_STATE joyState_;
+	XINPUT_STATE preJoyState_;
 };

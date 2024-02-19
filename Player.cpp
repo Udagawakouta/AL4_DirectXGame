@@ -21,6 +21,13 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	// 基底クラスの初期化
 	BaseCharacter::Initialize(models);
 
+	Input::GetInstance()->GetJoystickState(0, joyState_);
+	Input::GetInstance()->GetJoystickState(0, preJoyState_);
+
+	// 四角いキューブ
+	modelBullets_ = Model::CreateFromOBJ("cube");
+
+
 	worldtransformBase_.Initialize();
 	worldtransformBody_.Initialize();
 	worldtransformHead_.Initialize();
@@ -79,6 +86,13 @@ void Player::Update() {
 		worldtransformBase_.rotation_.y = std::atan2(move.x, move.z);
 	}
 
+	Attack();
+
+	// 弾更新
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
+	}
+
 	UpdateFloatingGimmick();
 
 	// 行列を定数バッファに転送
@@ -92,10 +106,12 @@ void Player::Update() {
 }
 
 void Player::Draw(const ViewProjection& viewprojection) {
-	// BaseCharacter::Draw(viewprojection);
+	
+	// 弾更新
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw(viewprojection);
+	}
 
-	// models_ {body, head, LArm,RArm};
-	// ICO_->Draw(worldtransformBase_, viewprojection);
 	models_[0]->Draw(worldtransformBody_, viewprojection);
 	models_[1]->Draw(worldtransformHead_, viewprojection);
 	models_[2]->Draw(worldtransformL_arm_, viewprojection);
@@ -123,3 +139,31 @@ void Player::UpdateFloatingGimmick() {
 }
 
 void Player::OnCollision() {}
+
+void Player::Attack() {
+	
+	preJoyState_ = joyState_;
+
+	// ゲームパッド状態取得
+	if (!Input::GetInstance()->GetJoystickState(0,joyState_)) {
+		return;
+	}
+
+	// Aボタン
+	if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A &&
+	    !(preJoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+		// 弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		//Vector3 worldPos = GetWorldPosition();
+		velocity = TransformNormal(velocity, worldtransformBody_.matWorld_);
+
+		// 弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(modelBullets_, GetWorldPosition(), velocity);
+
+		// 弾を登録する
+		bullets_.push_back(newBullet);
+	}
+}

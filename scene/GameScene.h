@@ -45,10 +45,12 @@ public: // メンバ関数
 	bool IsSceneEnd() { return isSceneEnd_; }
 	SceneType NextScene() {
 
-		return SceneType::kGamePlay; 
+		return SceneType::kGameOver; 
 	
 
 	}
+
+	void Reset();
 
 	/// <summary>
 	/// 描画
@@ -94,6 +96,7 @@ private: // メンバ変数
 	DebugCamera* debugcamera_ = nullptr;
 	// 自キャラ
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<PlayerBullet> playerBullets_;
 	// 敵キャラ
 	std::unique_ptr<Enemy> enemy_;
 
@@ -121,3 +124,4 @@ private: // メンバ変数
 
 
 };
+
