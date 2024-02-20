@@ -65,11 +65,18 @@ void Player::Update() {
 	// ゲームパッド状態
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// キャラクターの移動速さ
-		const float Speed = 0.3f;
+		float Speed = 0.3f;
+
+		if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
+			Speed = 0.5f;
+			Speed * 3;
+		}
 		// 移動量
 		Vector3 move = {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * Speed, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * Speed};
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * Speed,
+		};
+		
 		// 移動量に速さを反映
 		move = Normalize(move);
 		move = Multiply2(Speed, move);
