@@ -291,14 +291,14 @@ void GameScene::CheckAllCollisions() {
 	}
 #pragma endregion
 
-	#pragma region デバック
+	/*#pragma region デバック
 	ImGui::Begin("Begin");
 
 	ImGui::DragFloat("dist", &dist);
 	ImGui::DragFloat3("playerPos", A);
 	ImGui::DragFloat3("EnemyPos", B);
 	ImGui::End();
-	#pragma endregion
+	#pragma endregion*/
 
 
 	if (dist <= 0.1f + 0.1f) {

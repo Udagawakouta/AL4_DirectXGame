@@ -38,9 +38,9 @@ void PlayerBullet::Update() {
 		isDead_ = true;
 	}
 
-	ImGui::Begin("bullet");
+	/*ImGui::Begin("bullet");
 	ImGui::Text("pos.z:%f", worldTransform_.translation_.z);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
