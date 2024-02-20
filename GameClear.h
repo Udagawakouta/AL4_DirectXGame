@@ -27,9 +27,12 @@ public:
 	SceneType NextScene() { return SceneType::kTitle; }
 
 	// リセットの関数
-	void Reset() { isGameClearScene = false; }
+	void Reset();
 
 private:
+	Sprite* fadeinSprite_ = nullptr;
+	Vector4 fadeinColor_ = {1.0f, 1.0f, 1.0f, 0.0f};
+
 	// テクスチャ
 	uint32_t texturehandle_ = 0;
 	// スプライト

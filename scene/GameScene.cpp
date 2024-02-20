@@ -99,6 +99,15 @@ void GameScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
+
+	// 初期化処理
+	uint32_t fadeinTexHandle = TextureManager::Load("White.png");
+	fadeinSprite_ = Sprite::Create(fadeinTexHandle, {0, 0});
+
+	// 初期化処理
+	uint32_t fadeoutTexHandle = TextureManager::Load("Black.png");
+	fadeoutSprite_ = Sprite::Create(fadeoutTexHandle, {0, 0});
+	fadeoutSprite_->SetColor({1.0f, 1.0f, 1.0f, 0.0f});
 }
 
 void GameScene::Update() {
@@ -144,13 +153,28 @@ void GameScene::Update() {
 		isSceneEnd_ = true;
 		nextScene_ = SceneType::kGameClear;
 	}
+
+	if (isfeedOut_ == true) {
+		fadeoutColor_.w += 0.001f;
+		fadeoutSprite_->SetColor(fadeoutColor_);
+
+		// フェードアウトが終わったらisSceneEnd trueにする
+		isSceneEnd_ = true;
+	}
+	fadeinColor_.w -= 0.005f;
+	fadeinSprite_->SetColor(fadeinColor_);
 }
 
 void GameScene::Reset() 
 {
 	isSceneEnd_ = false;
 
+	// フェードイン
+	fadeinColor_ = {1.0f, 1.0f, 1.0f, 1.0f};
+	// フェードアウト
+	fadeoutColor_ = {1.0f, 1.0f, 1.0f, 0.0f};
 
+	isfeedOut_ = false;
 
 	// エネミーモデル
 	std::vector<Model*> enemyModels = {
@@ -215,7 +239,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	// sprite_->Draw();
+	
+	fadeinSprite_->Draw();
+
+	fadeoutSprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -278,12 +305,15 @@ void GameScene::CheckAllCollisions() {
 		// 自キャラのコールバック
 		player_->OnCollision();
 
-		isSceneEnd_ = true;
+		isfeedOut_ = true;
+		//isSceneEnd_ = true;
 		nextScene_ = SceneType::kGameOver;
-
-		// 敵キャラのコールバック
-		//enemy_->OnCollision();
 	}
 
 #pragma endregion
+}
+
+void GameScene::FeedOutCollisions() { 
+	
+	isfeedOut_ = true;
 }

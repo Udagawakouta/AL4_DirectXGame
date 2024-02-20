@@ -30,10 +30,11 @@ public:
 	SceneType NextScene() { return SceneType::kTitle; }
 
 	// リセットの関数
-	void Reset() { isGameOverScene = false; }
+	void Reset();
 
 private:
-
+	Sprite* fadeinSprite_ = nullptr;
+	Vector4 fadeinColor_ = {1.0f, 1.0f, 1.0f, 1.0f};
 
 	// テクスチャ
 	uint32_t texturehandle_ = 0;
@@ -45,6 +46,4 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-
-
 };

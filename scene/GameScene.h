@@ -59,12 +59,22 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
+	void FeedOutCollisions();
+
 private: // メンバ変数
 	SceneType nextScene_;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	// スプライト
 	Sprite* sprite_ = nullptr;
+
+	// フェードイン・アウト
+	Sprite* fadeinSprite_ = nullptr;
+	Vector4 fadeinColor_ = {1.0f, 1.0f, 1.0f, 1.0f};
+
+	// フェードアウト
+	Sprite* fadeoutSprite_ = nullptr;
+	Vector4 fadeoutColor_ = {1.0f, 1.0f, 1.0f, 0.0f};
 
 	// プレイヤーモデルデータ
 	std::unique_ptr<Model> modelPlayer_;
@@ -119,6 +129,6 @@ private: // メンバ変数
 	/// </summary>
 	bool isSceneEnd_ = false;
 
-
+	bool isfeedOut_ = false;
 };
 

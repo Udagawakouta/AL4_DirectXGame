@@ -105,6 +105,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				scene = titleScene->NextScene();
 
+				
 				gameOver->Reset();
 				gameClear->Reset();
 			}
