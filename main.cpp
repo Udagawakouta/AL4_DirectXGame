@@ -7,6 +7,7 @@
 #include "TextureManager.h"
 #include "WinApp.h"
 #include "TitleScene.h"
+#include "GameClear.h"
 #include "GameOver.h"
 #include "Enemy.h"
 
@@ -22,7 +23,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameScene* gameScene = nullptr;
 	TitleScene* titleScene = nullptr;
 	GameOver* gameOver = nullptr;
-	
+	GameClear* gameClear = nullptr;
+	SceneType* nextScene_ = nullptr;
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -72,6 +74,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameOver = new GameOver();
 	gameOver->Initialize();
 
+	gameClear = new GameClear();
+	gameClear->Initialize();
+
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
@@ -101,6 +106,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				scene = titleScene->NextScene();
 
 				gameOver->Reset();
+				gameClear->Reset();
 			}
 
 			break;
@@ -129,6 +135,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		
 		case SceneType::kGameClear:
+			gameClear->Update();
+
+			if (gameClear->isSceneEnd() == true) {
+				scene = gameClear->NextScene();
+
+				titleScene->Reset();
+				gameScene->Reset();
+			}
+
 			break;
 		}
 		
@@ -141,11 +156,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画開始
 		dxCommon->PreDraw();
 		
-		//gameScene->Draw();
 
 		switch (scene) {
 		case SceneType::kTitle:
-			//titleScene->Update();
 			titleScene->Draw();
 			break;
 
@@ -155,17 +168,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SceneType::kGameOver:
 			gameOver->Draw();
-
 			break;
 
 		case SceneType::kGameClear:
+			gameClear->Draw();
 			break;
 		}
 
 		// ここにシーンの描画を切り替える switch
 		// ゲームシーンの描画
-		// gameScene->Draw();
-		
 		
 		// 軸表示の描画
 		axisIndicator->Draw();

@@ -36,6 +36,7 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldtransformL_arm_.translation_.y = 1.0f;
 	worldtransformR_arm_.translation_.y = 1.0f;
 
+	isAlive_ = true;
 	// ICO_ = Model::CreateFromOBJ("ico", false);
 
 }
@@ -67,7 +68,7 @@ void Enemy::Update() {
 
 void Enemy::Draw(const ViewProjection& viewProjection) { 
 	// ICO_->Draw(worldtransformBase_, viewProjection);
-	if (isDead_ == true) {
+	if (isAlive_ == true) {
 	models_[0]->Draw(worldtransformBody_, viewProjection);
 	models_[1]->Draw(worldtransformL_arm_, viewProjection);
 	models_[2]->Draw(worldtransformR_arm_, viewProjection);
@@ -76,6 +77,6 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 
 void Enemy::OnCollision() {
 
-	isDead_ = false; 
+	isAlive_ = false; 
 }
 

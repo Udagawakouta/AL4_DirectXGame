@@ -43,11 +43,8 @@ public: // メンバ関数
 	/// </summary>
 	void Update();
 	bool IsSceneEnd() { return isSceneEnd_; }
-	SceneType NextScene() {
-
-		return SceneType::kGameOver; 
-	
-
+	SceneType NextScene() { 
+		return nextScene_;
 	}
 
 	void Reset();
@@ -63,7 +60,7 @@ public: // メンバ関数
 	void CheckAllCollisions();
 
 private: // メンバ変数
-
+	SceneType nextScene_;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	// スプライト

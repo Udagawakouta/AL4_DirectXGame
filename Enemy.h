@@ -23,7 +23,7 @@ public:
 
 	// リセットの関数
 	
-	bool IsDead() const { return isDead_; }
+	bool IsAlive() const { return isAlive_; }
 
 private:
 	// ワールド変換データ
@@ -44,6 +44,6 @@ private:
 	uint32_t textureHandle_ = 0u;
 
 	// 死亡フラグ
-	bool isDead_ = true;
+	bool isAlive_ = true;
  
 };

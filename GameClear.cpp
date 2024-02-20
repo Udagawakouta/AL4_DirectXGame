@@ -1,17 +1,16 @@
-﻿#include "GameOver.h"
+﻿#include "GameClear.h"
 #include "TextureManager.h"
 
-GameOver::GameOver() {}
+GameClear::GameClear() {}
 
-GameOver::~GameOver() 
+GameClear::~GameClear() 
 { 
 	delete sprite_;
 }
 
-void GameOver::Initialize() 
-{
+void GameClear::Initialize() {
 	// ファイル名を指定してテクスチャを読み込む
-	texturehandle_ = TextureManager::Load("AL GO.png");
+	texturehandle_ = TextureManager::Load("AL GC.png");
 	// スプライトの生成
 	sprite_ = Sprite::Create(texturehandle_, {0, 0});
 
@@ -20,16 +19,13 @@ void GameOver::Initialize()
 	audio_ = Audio::GetInstance();
 }
 
-void GameOver::Update() 
-{ 
-	if (input_->TriggerKey(DIK_SPACE)) 
-	{
-		isGameOverScene = true;
+void GameClear::Update() {
+	if (input_->TriggerKey(DIK_SPACE)) {
+		isGameClearScene = true;
 	}
 }
 
-void GameOver::Draw() 
-{
+void GameClear::Draw() {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 

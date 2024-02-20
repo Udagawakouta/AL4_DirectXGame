@@ -140,14 +140,16 @@ void GameScene::Update() {
 
 	CheckAllCollisions();
 
-	if (!enemy_->IsDead()) {
+	if (!enemy_->IsAlive()) {
 		isSceneEnd_ = true;
+		nextScene_ = SceneType::kGameClear;
 	}
 }
 
 void GameScene::Reset() 
 {
 	isSceneEnd_ = false;
+
 
 
 	// エネミーモデル
@@ -277,11 +279,10 @@ void GameScene::CheckAllCollisions() {
 		player_->OnCollision();
 
 		isSceneEnd_ = true;
+		nextScene_ = SceneType::kGameOver;
 
 		// 敵キャラのコールバック
-		enemy_->OnCollision();
-
-
+		//enemy_->OnCollision();
 	}
 
 #pragma endregion
